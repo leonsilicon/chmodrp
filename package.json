@@ -1,5 +1,6 @@
 {
-	"name": "chmodrp",
+	"name": "@chmodrp/monorepo",
+	"private": true,
 	"version": "0.0.0",
 	"description": "chmod -R with promises",
 	"license": "MIT",
@@ -14,6 +15,7 @@
 		"url": "https://leonzalion.com"
 	},
 	"scripts": {
+		"release": "pnpm --filter=chmodrp run release",
 		"prepare": "lion-git-hooks",
 		"build": "pnpm recursive run build",
 		"test": "pnpm recursive run test",
