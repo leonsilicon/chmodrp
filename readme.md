@@ -1,5 +1,7 @@
 # chmodrp
 
+[![npm version](https://img.shields.io/npm/v/chmodrp)](https://npmjs.com/package/chmodrp)
+
 A port of [isaacs's chmodr](https://github.com/isaacs/chmodr) but using the Promise API.\
 Has the same effect as the command line command: `chmod -R`.
 

@@ -34,5 +34,12 @@
 	},
 	"publishConfig": {
 		"directory": "dist"
-	}
+	},
+	"keywords": [
+		"chmod",
+		"chmodr",
+		"recursive",
+		"promise",
+		"fs"
+	]
 }
