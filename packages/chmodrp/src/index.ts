@@ -1,1 +1,1 @@
-export { chmodr, chmodrSync } from './chmodr.js';
+export { chmodr, chmodrSync } from './utils/chmodr.js';
