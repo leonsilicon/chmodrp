@@ -1,11 +1,12 @@
 # chmodrp
 
-A port of [isaacs's chmodr](https://github.com/isaacs/chmodr) but using the Promise API. Has the same effect as the command line command: `chmod -R`.
+A port of [isaacs's chmodr](https://github.com/isaacs/chmodr) but using the Promise API.\
+Has the same effect as the command line command: `chmod -R`.
 
 ## Install
 
 ```shell
-npm install chmodr
+npm install chmodrp
 ```
 
 ## API
@@ -27,6 +28,12 @@ The path of the file to recursively `chmod`.
 Type: `number`
 
 The file mode to `chmod` the files with.
+
+### chmodrSync(path, mode)
+
+Returns: `void`
+
+Does the same thing as `chmodr(path, mode)` but synchronously.
 
 ## Usage
 
