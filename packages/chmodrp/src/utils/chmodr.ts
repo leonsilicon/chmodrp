@@ -1,5 +1,4 @@
-/* eslint-disable no-bitwise */
-
+import type { Dirent } from 'node:fs';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
@@ -13,15 +12,21 @@ const dirMode = (mode: number | string) => {
 	return mode;
 };
 
+interface StatsWithName extends fs.Stats {
+	name: string;
+}
+
 async function chmodrKid(
 	entryPath: string,
-	child: (fs.Stats & { name: string }) | string,
+	child: Dirent,
 	mode: fs.Mode
 ): Promise<void> {
 	if (typeof child === 'string') {
-		const stats = await fs.promises.lstat(path.resolve(entryPath, child));
-		(stats as any).name = child;
-		await chmodrKid(entryPath, stats as any, mode);
+		const stats = (await fs.promises.lstat(
+			path.resolve(entryPath, child)
+		)) as StatsWithName;
+		stats.name = child;
+		await chmodrKid(entryPath, stats, mode);
 		return;
 	}
 
@@ -33,15 +38,7 @@ async function chmodrKid(
 	}
 }
 
-interface StatsWithName extends fs.Stats {
-	name: string;
-}
-
-function chmodrKidSync(
-	entryPath: string,
-	child: StatsWithName | string,
-	mode: fs.Mode
-) {
+function chmodrKidSync(entryPath: string, child: Dirent, mode: fs.Mode) {
 	if (typeof child === 'string') {
 		const stats = fs.lstatSync(path.resolve(entryPath, child)) as StatsWithName;
 		stats.name = child;
@@ -68,18 +65,21 @@ export async function chmodr(entryPath: string, mode: fs.Mode): Promise<void> {
 
 		await Promise.all(
 			children.map(async (child) => {
-				await chmodrKid(entryPath, child.name, mode);
+				await chmodrKid(entryPath, child, mode);
 				await fs.promises.chmod(entryPath, dirMode(mode));
 			})
 		);
 	} catch (error: unknown) {
 		const err = error as NodeJS.ErrnoException;
 
+		if (err.code === 'ENOTDIR') {
+			await fs.promises.chmod(entryPath, mode);
+		}
 		// any error other than ENOTDIR means it's not readable, or
 		// doesn't exist. Give up.
-		if (err.code !== 'ENOTDIR') throw err;
-
-		return fs.promises.chmod(entryPath, mode);
+		else {
+			throw err;
+		}
 	}
 }
 
@@ -89,7 +89,7 @@ export function chmodrSync(entryPath: string, mode: fs.Mode): void {
 		children = fs.readdirSync(entryPath, { withFileTypes: true });
 
 		for (const child of children) {
-			chmodrKidSync(entryPath, child.name, mode);
+			chmodrKidSync(entryPath, child, mode);
 		}
 
 		fs.chmodSync(entryPath, dirMode(mode));
@@ -98,8 +98,8 @@ export function chmodrSync(entryPath: string, mode: fs.Mode): void {
 
 		if (err.code === 'ENOTDIR') {
 			fs.chmodSync(entryPath, mode);
+		} else {
+			throw err;
 		}
-
-		throw err;
 	}
 }
