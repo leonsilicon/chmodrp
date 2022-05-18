@@ -1,5 +1,4 @@
 {
 	"name": "@chmodrp/scripts",
-	"type": "module",
-	"dependencies": {}
+	"type": "module"
 }

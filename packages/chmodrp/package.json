@@ -16,15 +16,9 @@
 	"type": "module",
 	"exports": "./src/index.ts",
 	"scripts": {
-		"release": "lionp",
 		"preinstall": "pnpm build",
-		"prepare": "lion-git-hooks",
 		"build": "node-ts ./scripts/build.ts",
-		"start": "node-ts ./src/index.ts",
-		"test": "vitest run",
-		"lint": "eslint --cache --fix .",
-		"prettier": "prettier --write .",
-		"typecheck": "tsc --noEmit"
+		"start": "node-ts ./src/index.ts"
 	},
 	"devDependencies": {
 		"desm": "^1.2.0",
